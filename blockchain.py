@@ -1,3 +1,7 @@
+import hashlib
+import json
+import datetime
+
 class Chain: # Classe 
     def __init__(self,name):
         self.chain = [] # Lista armazenando operacoes do ativo

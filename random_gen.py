@@ -1,3 +1,6 @@
+import random 
+import string
+
 def randomLote():
     letters = ''.join(random.choices(string.ascii_uppercase, k=4))  # Gera 4 letras maiúsculas
     numbers = ''.join(random.choices(string.digits, k=3))  # Gera 3 números
