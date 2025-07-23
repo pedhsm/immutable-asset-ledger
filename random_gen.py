@@ -1,5 +1,6 @@
 import random 
 import string
+from blockchain import Chain
 
 def randomLote():
     letters = ''.join(random.choices(string.ascii_uppercase, k=4))  # Gera 4 letras maiúsculas
