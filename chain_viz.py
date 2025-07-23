@@ -33,13 +33,13 @@ class ChainVisualizer():
         return index
 
     def find_by_hash(self, target_hash):
-        """Ultra-fast hash lookup with normalization"""
+        """ Hash lookup"""
         normalized_hash = target_hash.strip().lower()
         return self._hash_index.get(normalized_hash)
 
     def get_chain_segment(self, target_hash):
         """
-        Get full chain segment containing the target hash
+        Pega a cadeia inteira do segmento do hash desejado
         Returns: (previous_blocks, target_block, next_blocks)
         """
         current = self.find_by_hash(target_hash)
@@ -60,17 +60,15 @@ class ChainVisualizer():
         return previous_blocks, current, next_blocks
 
     def visualize_from_hash(self, target_hash):
-        """Complete visualization workflow from hash"""
+        """Visualizacao completa a partir do hash"""
         previous, current, next_blocks = self.get_chain_segment(target_hash)
         
         if not current:
             sample_hashes = [block['hash'][:8] + '...' for block in self.data_store[:3]]
             raise ValueError(f"Hash not found. Sample hashes: {', '.join(sample_hashes)}")
 
-        # Visualization setup
         fig = go.Figure()
         
-        # Add central node
         fig.add_trace(self._create_node(
             x=0, y=0,
             text=f"🎯 {current['name']}<br>Hash: {current['hash'][:8]}...",
@@ -78,7 +76,6 @@ class ChainVisualizer():
             size=25
         ))
 
-        # Add previous nodes (left side)
         prev_positions = self._calculate_positions(len(previous), sector=(-np.pi/2, np.pi/2))
         for idx, block in enumerate(previous):
             x, y = prev_positions[idx]
@@ -89,7 +86,6 @@ class ChainVisualizer():
             ))
             fig.add_trace(self._create_connection(0, 0, x, y))
 
-        # Add next nodes (right side)
         next_positions = self._calculate_positions(len(next_blocks), sector=(np.pi/2, 3*np.pi/2))
         for idx, block in enumerate(next_blocks):
             x, y = next_positions[idx]
@@ -100,11 +96,9 @@ class ChainVisualizer():
             ))
             fig.add_trace(self._create_connection(0, 0, x, y))
 
-        # Final layout
         fig.update_layout(self._base_layout(title=f"Chain Context: {current['name']}"))
         return fig
 
-    # Helper methods
     def _create_node(self, x, y, text, color, size=20):
         return go.Scatter(
             x=[x], y=[y],
